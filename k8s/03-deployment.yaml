@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: login-keycloack
+  namespace: app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: login-keycloack
+  template:
+    metadata:
+      labels:
+        app: login-keycloack
+    spec:
+      containers:
+      - name: login-keycloack
+        image: default-route-openshift-image-registry.apps-crc.testing/app/login-keycloack:latest
+        ports:
+        - containerPort: 9090
+        envFrom:
+        - configMapRef:
+            name: login-keycloack-config
+        - secretRef:
+            name: login-keycloack-secret

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: login-keycloack
+  namespace: app
+spec:
+  selector:
+    app: login-keycloack
+  ports:
+  - port: 9090
+    targetPort: 9090

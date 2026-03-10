@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: login-keycloack-config
+  namespace: app
+data:
+  QUARKUS_HTTP_PORT: "9090"
+  QUARKUS_OIDC_AUTH_SERVER_URL: "https://sso-sso.apps-crc.testing/auth/realms/redhat-dev"
+  QUARKUS_OIDC_CLIENT_ID: "login-keycloak"
+  QUARKUS_OIDC_APPLICATION_TYPE: "web-app"
+  QUARKUS_OIDC_ROLES_SOURCE: "accesstoken"
+  QUARKUS_OIDC_ROLES_ROLE_CLAIM_PATH: "realm_access/roles"
+  QUARKUS_OIDC_AUTHENTICATION_SCOPES: "openid,roles"
+  QUARKUS_OIDC_TLS_VERIFICATION: "none"
+  QUARKUS_HTTP_PROXY_PROXY_ADDRESS_FORWARDING: "true"
+  QUARKUS_HTTP_PROXY_ALLOW_FORWARDED: "true"
