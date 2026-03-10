@@ -12,7 +12,7 @@ Você pode executar a aplicação em modo dev (com live coding) usando:
 ./mvnw quarkus:dev
 ```
 
-> **_NOTA:_** O Quarkus inclui um Dev UI disponível apenas em modo dev em <http://localhost:8080/q/dev/>.
+> **_NOTA:_** O Quarkus inclui um Dev UI disponível apenas em modo dev em <http://localhost:9090/q/dev/>.
 
 ## Empacotar e executar a aplicação
 
