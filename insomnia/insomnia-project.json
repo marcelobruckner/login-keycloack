@@ -1,0 +1,130 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-03-10T00:00:00.000Z",
+  "__export_source": "insomnia",
+  "resources": [
+    {
+      "_id": "wrk_keycloak",
+      "_type": "workspace",
+      "name": "Keycloak RBAC",
+      "description": "Workspace para testar OIDC com Keycloak + Quarkus",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "name": "base",
+      "parentId": "wrk_keycloak",
+      "data": {
+        "KEYCLOAK_BASE": "http://localhost:8080",
+        "REALM": "redhat-dev",
+        "CLIENT_ID": "login-keycloak",
+        "CLIENT_SECRET": "wTynbek6fLZLJjWD3G08cgSN6A7hca1r",
+        "APP_BASE": "http://localhost:9090",
+        "USERNAME": "marcelo",
+        "PASSWORD": "marcelo"
+      }
+    },
+    {
+      "_id": "env_admin",
+      "_type": "environment",
+      "name": "admin",
+      "parentId": "env_base",
+      "data": {
+        "USERNAME": "marcelo",
+        "PASSWORD": "marcelo"
+      }
+    },
+    {
+      "_id": "env_user",
+      "_type": "environment",
+      "name": "user",
+      "parentId": "env_base",
+      "data": {
+        "USERNAME": "ana",
+        "PASSWORD": "ana"
+      }
+    },
+    {
+      "_id": "env_viewer",
+      "_type": "environment",
+      "name": "viewer",
+      "parentId": "env_base",
+      "data": {
+        "USERNAME": "joao",
+        "PASSWORD": "joao"
+      }
+    },
+    {
+      "_id": "fld_root",
+      "_type": "request_group",
+      "parentId": "wrk_keycloak",
+      "name": "RBAC Requests"
+    },
+    {
+      "_id": "req_token",
+      "_type": "request",
+      "parentId": "fld_root",
+      "name": "Get Token (password grant)",
+      "method": "POST",
+      "url": "{{ _.KEYCLOAK_BASE }}/realms/{{ _.REALM }}/protocol/openid-connect/token",
+      "body": {
+        "mimeType": "application/x-www-form-urlencoded",
+        "params": [
+          { "name": "grant_type", "value": "password" },
+          { "name": "client_id", "value": "{{ _.CLIENT_ID }}" },
+          { "name": "client_secret", "value": "{{ _.CLIENT_SECRET }}" },
+          { "name": "username", "value": "{{ _.USERNAME }}" },
+          { "name": "password", "value": "{{ _.PASSWORD }}" },
+          { "name": "scope", "value": "openid roles" }
+        ]
+      }
+    },
+    {
+      "_id": "req_admin",
+      "_type": "request",
+      "parentId": "fld_root",
+      "name": "Admin Endpoint",
+      "method": "GET",
+      "url": "{{ _.APP_BASE }}/hello/private/admin",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.access_token }}" }
+      ]
+    },
+    {
+      "_id": "req_user",
+      "_type": "request",
+      "parentId": "fld_root",
+      "name": "User Endpoint",
+      "method": "GET",
+      "url": "{{ _.APP_BASE }}/hello/private/user",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.access_token }}" }
+      ]
+    },
+    {
+      "_id": "req_viewer",
+      "_type": "request",
+      "parentId": "fld_root",
+      "name": "Viewer Endpoint",
+      "method": "GET",
+      "url": "{{ _.APP_BASE }}/hello/private/viewer",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.access_token }}" }
+      ]
+    },
+    {
+      "_id": "req_me",
+      "_type": "request",
+      "parentId": "fld_root",
+      "name": "Me Endpoint",
+      "method": "GET",
+      "url": "{{ _.APP_BASE }}/hello/me",
+      "headers": [
+        { "name": "Authorization", "value": "Bearer {{ _.access_token }}" }
+      ]
+    }
+  ]
+}
+
