@@ -1,0 +1,52 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.5.6
+    container_name: keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./keycloak/redhat-dev-import.json:/opt/keycloak/data/import/redhat-dev-import.json
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /realms/redhat-dev HTTP/1.0\\r\\nHost: localhost\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      QUARKUS_PROFILE: docker
+      QUARKUS_OIDC_AUTH_SERVER_URL: http://keycloak:8080/realms/redhat-dev
+      QUARKUS_OIDC_CLIENT_ID: login-keycloak
+      QUARKUS_OIDC_APPLICATION_TYPE: service
+      QUARKUS_OIDC_TOKEN_ISSUER: any
+      QUARKUS_HTTP_PORT: "9090"
+    ports:
+      - "9090:9090"
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/9090"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

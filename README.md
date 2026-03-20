@@ -69,6 +69,20 @@ Para saber mais sobre executáveis nativos, consulte <https://quarkus.io/guides/
 
 Este projeto usa Keycloak (OIDC) e aplica controle de acesso por roles.
 
+## Executar com Docker Compose
+
+Para subir a aplicação e o Keycloak juntos:
+
+```bash
+docker compose up --build
+```
+
+A aplicação sobe em `http://localhost:9090` e o Keycloak em `http://localhost:8080`.
+
+Observações importantes:
+- O backend usa o perfil `docker` (definido no `docker-compose.yml`).
+- Não configure `KC_HOSTNAME=localhost`, pois o Keycloak publicará metadados OIDC apontando para `localhost`, o que quebra a comunicação entre containers. O compose já está configurado para aceitar o host da requisição (`KC_HOSTNAME_STRICT=false`).
+
 ### Subir o Keycloak com Docker
 
 ```bash
@@ -76,7 +90,7 @@ docker run -d --name keycloak \
   -p 8080:8080 \
   -e KEYCLOAK_ADMIN=admin \
   -e KEYCLOAK_ADMIN_PASSWORD=admin \
-  quay.io/keycloak/keycloak:26.5.5 start-dev
+  quay.io/keycloak/keycloak:26.5.6 start-dev
 ```
 
 Admin Console: `http://localhost:8080` (usuário: `admin`, senha: `admin`).
