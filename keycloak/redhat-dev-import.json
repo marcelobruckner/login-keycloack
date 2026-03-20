@@ -1,0 +1,90 @@
+{
+  "realm": "redhat-dev",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "accessTokenLifespan": 300,
+  "roles": {
+    "realm": [
+      { "name": "admin", "composite": false, "clientRole": false },
+      { "name": "user", "composite": false, "clientRole": false },
+      { "name": "viewer", "composite": false, "clientRole": false }
+    ],
+    "client": {
+      "login-keycloak": [
+        { "name": "read", "composite": false, "clientRole": true },
+        { "name": "write", "composite": false, "clientRole": true }
+      ]
+    }
+  },
+  "clients": [
+    {
+      "clientId": "login-keycloak",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["/*"],
+      "webOrigins": ["/*"],
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["openid", "profile", "email", "roles"]
+    }
+  ],
+  "groups": [
+    {
+      "name": "admin",
+      "path": "/admin",
+      "realmRoles": ["admin"],
+      "clientRoles": { "login-keycloak": ["read", "write"] }
+    },
+    {
+      "name": "user",
+      "path": "/user",
+      "realmRoles": ["user"],
+      "clientRoles": { "login-keycloak": ["read"] }
+    },
+    {
+      "name": "viewer",
+      "path": "/viewer",
+      "realmRoles": ["viewer"],
+      "clientRoles": { "login-keycloak": ["read"] }
+    }
+  ],
+  "defaultGroups": ["/user"],
+  "users": [
+    {
+      "username": "marcelo",
+      "email": "marcelo@email.com",
+      "firstName": "Marcelo",
+      "lastName": "Bruckner",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "123", "temporary": false }],
+      "realmRoles": ["admin"],
+      "clientRoles": { "login-keycloak": ["read", "write"] }
+    },
+    {
+      "username": "ana",
+      "email": "ana@email.com",
+      "firstName": "Ana",
+      "lastName": "Silva",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "123", "temporary": false }],
+      "realmRoles": ["user"],
+      "clientRoles": {}
+    },
+    {
+      "username": "joao",
+      "email": "joao@email.com",
+      "firstName": "João",
+      "lastName": "Santos",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [{ "type": "password", "value": "123", "temporary": false }],
+      "realmRoles": ["viewer"],
+      "clientRoles": {}
+    }
+  ]
+}
